@@ -1,0 +1,19 @@
+# Python and Jupyter
+__pycache__/
+.ipynb_checkpoints/
+.venv/
+venv/
+*.py[cod]
+.env
+
+# Local or sensitive environment configuration
+.env.*
+!.env.example
+
+# Generated CSV (upload only after confirming license and intended disclosure)
+data/processed/*.csv
+
+# Temporary OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
