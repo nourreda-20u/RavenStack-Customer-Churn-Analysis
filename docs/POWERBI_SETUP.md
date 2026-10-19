@@ -15,12 +15,12 @@
 5. The data connection or refresh may require updating the local processed CSV path. Opening the saved report is not the same as successfully refreshing it.
 
 ## Screenshots for GitHub
-Approved Power BI Desktop screenshots are prepared for publication in:
+Dashboard screenshots included in the repository:
 - `assets/screenshots/01_home_cover.png`
 - `assets/screenshots/02_customer_churn_overview.png`
 - `assets/screenshots/03_customer_experience_engagement.png`
 
-These image files must be uploaded separately to GitHub; they are not in the repository yet.
+All three screenshots and the Power BI Desktop report are included in this repository.
 
 To create each: select the page, use Fit to page, hide the editing panes if needed, and use Windows Snipping Tool. Save a clear full-page PNG without exposing personal file paths.
 
@@ -30,4 +30,4 @@ To create each: select the page, use Fit to page, hide the editing panes if need
 - Date-valid usage coverage is based on records meeting account signup and subscription-period date checks.
 
 ## Verification status
-PBIX file and page metadata were inspected. Power BI Desktop execution, button interactions, data refresh, and final screenshots were not independently tested in this environment.
+The PBIX file and three screenshot files are present in GitHub. Their presence does not certify that Power BI Desktop interactions or a fresh data refresh were independently tested in this review.
