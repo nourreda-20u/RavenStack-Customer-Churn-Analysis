@@ -1,11 +1,11 @@
 # RavenStack — SQL Setup and Execution
 
-This folder documents the SQL Server stage of the RavenStack Customer Churn & Retention Analysis portfolio project. The source dataset contains five CSV files, imported individually into SQL Server during the original project. The original analysis queries are preserved unchanged.
+This folder documents the SQL Server stage of the RavenStack Customer Churn & Retention Analysis portfolio project. The source dataset contains five CSV files in [`data/raw/`](../data/raw/), imported individually into SQL Server during the original project. The original analysis queries are preserved unchanged.
 
 ## Requirements
 
 - Microsoft SQL Server and SQL Server Management Studio (SSMS), or an equivalent SQL Server client.
-- Access to the five original RavenStack CSV datasets and permission to create a database and tables.
+- The five original RavenStack CSV files under [`data/raw/`](../data/raw/) and permission to create a database and tables.
 
 ## Expected database structure
 
