@@ -60,5 +60,5 @@ The validated portfolio baselines are 500 accounts, 110 ever-churned accounts, 2
 ## Reproducibility caveats
 
 - The SQL scripts do **not** include original CSV files, `CREATE TABLE` definitions, or a fully automated import script. CSV import and schema/type verification are prerequisite manual steps, matching the original workflow.
-- Exact dataset source and redistribution/license details should be linked from the top-level project README once verified. Do not assume redistribution permission.
+- The verified source is the [SaaS Subscription & Churn Analytics Dataset on Kaggle](https://www.kaggle.com/datasets/rivalytics/saas-subscription-and-churn-analytics-dataset), by River @ Rivalytics. The publisher describes the dataset as synthetic and the terms as “MIT-like”; consult the original publisher's terms before redistributing CSV files.
 - The SQL was reviewed statically for publishing instructions; it was **not rerun on a fresh SQL Server instance** as part of preparing this package.
