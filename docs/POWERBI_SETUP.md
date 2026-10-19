@@ -15,10 +15,12 @@
 5. The data connection or refresh may require updating the local processed CSV path. Opening the saved report is not the same as successfully refreshing it.
 
 ## Screenshots for GitHub
-Screenshots must be captured from Power BI Desktop (these are not included in this package):
-- `assets/home.png`
-- `assets/churn_overview.png`
-- `assets/customer_engagement.png`
+Approved Power BI Desktop screenshots are prepared for publication in:
+- `assets/screenshots/01_home_cover.png`
+- `assets/screenshots/02_customer_churn_overview.png`
+- `assets/screenshots/03_customer_experience_engagement.png`
+
+These image files must be uploaded separately to GitHub; they are not in the repository yet.
 
 To create each: select the page, use Fit to page, hide the editing panes if needed, and use Windows Snipping Tool. Save a clear full-page PNG without exposing personal file paths.
 
