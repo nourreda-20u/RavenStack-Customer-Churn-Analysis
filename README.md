@@ -1,104 +1,117 @@
-# RavenStack — Customer Churn & Retention Analysis
+# RavenStack | Customer Churn & Retention Analysis
 
-**An end-to-end descriptive data analytics case study** using **SQL Server → Python → Power BI** to explore historical churn flags, subscription behavior, product engagement, and customer support across a synthetic multi-table SaaS dataset.
+**End-to-end data analytics case study · SQL Server · Python · Power BI**
 
-> **Scope:** Descriptive / exploratory analytics, not churn prediction or machine learning. The historical `churn_flag` identifies accounts **ever flagged as churned**; it is **not** a current-status label or monthly churn rate.
+RavenStack is a synthetic SaaS customer dataset. This project builds an account-level analytical dataset from five related tables, investigates historical churn patterns, and presents the results in a three-page Power BI report.
 
-## Dashboard preview
+> **Scope:** Descriptive and exploratory analysis, **not** a churn prediction model. "Ever churned" means an account was flagged as churned at some point; it is **not** current churn status or a monthly churn rate.
 
-### Home / Cover
-![RavenStack home cover](assets/screenshots/01_home_cover.png)
+## Dashboard
 
-### Customer Churn Overview
-![Customer churn overview](assets/screenshots/02_customer_churn_overview.png)
+The Power BI report includes three pages:
 
-### Customer Experience & Engagement
-![Customer experience and engagement](assets/screenshots/03_customer_experience_engagement.png)
+| Page | Focus |
+| --- | --- |
+| **Home** | Project introduction, headline metrics and navigation |
+| **Customer Churn Overview** | Account counts and ever-churned shares by industry, plan tier and seat band |
+| **Customer Experience & Engagement** | Subscription history, plan changes, product usage validity, support activity and satisfaction |
 
-Interactive report: [`powerbi/Ravenstack.pbix`](powerbi/Ravenstack.pbix) (requires Power BI Desktop).
+The screenshots and downloadable `Ravenstack.pbix` report will be linked here once their binary files are uploaded under `assets/screenshots/` and `powerbi/`. The report should be opened in **Power BI Desktop**; page-navigation buttons can be tested with **Ctrl + Click** in edit mode.
 
-## Business objectives
+## Business questions
 
-- Compare **ever-churned percentages** by industry, plan tier, and account size.
-- Summarize subscription history (including upgrade and downgrade flags) by churn group.
-- Compare recorded product usage with usage that passes **date-window validity** checks.
-- Explore customer support activity and available satisfaction scores across churn groups.
-- Explain data-quality limits and avoid unsupported causal interpretations.
+- How does historical churn vary by industry, plan tier and account size?
+- How do subscription counts, upgrades and downgrades differ between churn groups?
+- What proportion of product-usage records can be used after temporal validity checks?
+- What do account-level support activity and available satisfaction scores show?
+- Which data-quality limitations constrain business interpretations?
 
-## Dataset and attribution
+## Data source and credits
 
-**[SaaS Subscription & Churn Analytics Dataset](https://www.kaggle.com/datasets/rivalytics/saas-subscription-and-churn-analytics-dataset)** by **River @ Rivalytics**. The source documentation describes a fully synthetic five-table SaaS dataset and requests attribution for educational and portfolio use. Author's blog: [Rivalytics on Medium](https://rivalytics.medium.com).
+**[SaaS Subscription & Churn Analytics Dataset — Kaggle](https://www.kaggle.com/datasets/rivalytics/saas-subscription-and-churn-analytics-dataset)**, created by **River @ Rivalytics**.
 
-The accompanying source documentation describes the license as *“MIT-like”*, rather than providing an unambiguous standard license identifier. Accordingly, this repository links to the original Kaggle dataset instead of redistributing the raw CSVs. Follow the publisher's terms when downloading or reusing the data.
+The five source CSV files were imported individually into SQL Server. The dataset is **synthetic**, not customer information from a real business. Source documentation credits the author and describes its terms as *“MIT-like”*, rather than a standard, unambiguous license identifier. To avoid assuming redistribution rights, **the raw CSV files are not republished here**; download them from the original Kaggle page.
 
-| Source table | Rows |
-|---|---:|
+| Source table | Records |
+| --- | ---: |
 | Accounts | 500 |
 | Subscriptions | 5,000 |
 | Feature usage | 25,000 |
 | Support tickets | 2,000 |
 | Churn events | 600 |
-| **Total source rows** | **33,100** |
-
-The tables are imported into SQL Server under the `raw` schema; processed account-level measures are exposed through `analytics.vw_account_360`.
+| **Total** | **33,100** |
 
 ## Workflow
 
 ```text
-Five raw CSV tables
-        ↓
-SQL Server: import → relational integrity / data quality review → analytical views → validation
-        ↓
-Python: read analytics.vw_account_360 → account-level EDA → export processed CSV
-        ↓
-Power BI: three-page interactive descriptive report
+Kaggle source: five CSV files
+          ↓
+SQL Server
+Import → relational checks → data-quality audit → analytical views → validation
+          ↓
+analytics.vw_account_360 (one row per account)
+          ↓
+Python / pandas / seaborn
+Descriptive EDA → churn-group comparisons → processed account-level CSV
+          ↓
+Power BI Desktop
+Home → Churn Overview → Experience & Engagement
 ```
 
-### SQL — data review and feature preparation
+### 1. SQL Server
 
-The SQL stage uses five ordered scripts in [`sql/`](sql/) and builds account-level analytical views. Checks include duplicate IDs, relationships, signup/subscription/usage-date consistency, support timings, and account vs event churn-status caveats. The original `feature_usage.usage_id` includes repeated values, so `FEUS_ID` serves as the surrogate key without silently deleting records.
+The scripts in [`sql/`](sql/) prepare the database, document quality issues and create account-level analytical views. Important checks include duplicated `usage_id` values, foreign-key integrity, usage before signup, usage outside subscription periods, inconsistent support timestamps and churn-event discrepancies.
 
-**Important:** `00_database_setup.sql` creates the database and schemas, **not the imported source tables**. Import the five CSV files individually as documented in [`docs/SQL_SETUP.md`](docs/SQL_SETUP.md); run `01_database_foundation.sql` **once** after import, then scripts `02`–`04` in order. The project does not claim fully automated raw-table creation/import.
+Repeated source `usage_id` values are not silently deleted: a surrogate `FEUS_ID` is used for feature-usage row identity. Related tables are aggregated **before** the final account-level joins to avoid multiplying their measures.
 
-### Python — exploratory data analysis
+**Execution order:** `00_database_setup.sql` → manually import the five CSV files into the `raw` schema → `01_database_foundation.sql` → `02_data_quality.sql` → `03_analytical_views.sql` → `04_final_validation.sql`.
 
-[`notebooks/customer_churn_eda.ipynb`](notebooks/customer_churn_eda.ipynb) connects to SQL Server with SQLAlchemy/pyodbc, reads `analytics.vw_account_360`, analyzes customer groups and data coverage, and exports `data/processed/ravenstack_account_360.csv` for reporting. The notebook is descriptive, without a prediction model. See [`docs/PYTHON_SETUP.md`](docs/PYTHON_SETUP.md).
+The import is intentionally documented as a manual SQL Server step, matching the actual project. Script `00` creates the database/schemas **but not the CSV-derived tables**; script `01` should be run **once** on the imported data. See [SQL setup](docs/SQL_SETUP.md).
 
-### Power BI — report
+### 2. Python EDA
 
-The report comprises **Home**, **Customer Churn Overview**, and **Customer Experience & Engagement** with navigation, KPI cards, slicers, segment comparisons, product engagement, subscription history, and customer support. See [`docs/POWERBI_SETUP.md`](docs/POWERBI_SETUP.md) for desktop opening, navigation and refresh considerations.
+[`notebooks/customer_churn_eda.ipynb`](notebooks/customer_churn_eda.ipynb) reads `analytics.vw_account_360` using SQLAlchemy and pyodbc. It performs account-level descriptive comparisons, constructs size groups and exports `data/processed/ravenstack_account_360.csv` for Power BI. No predictive model is trained.
 
-## Selected findings
+The connection uses a local `SQL_SERVER` environment variable. See [Python setup](docs/PYTHON_SETUP.md).
 
-| Measure | Result | Interpretation |
-|---|---:|---|
-| Accounts | **500** | Distinct account-level records |
-| Ever-churned accounts | **110** | Historical account flag |
-| Ever-churned share | **22.00%** | 110 / 500; **not** a monthly churn rate |
-| Recorded feature-usage rows | **25,000** | All logged usage rows |
-| Date-valid feature-usage rows | **5,568** | Pass signup and subscription-window checks |
-| Date-valid usage-row coverage | **22.27%** | 5,568 / 25,000 |
+### 3. Power BI
 
-- **Industry variation:** DevTools has a higher observed ever-churned share (35 of 113 accounts; approximately 30.97%) than some other segments. These are historical group comparisons, not causal evidence.
-- **Subscription behavior:** Mean subscriptions per account are similar across groups (approximately 10.29 for Ever Churned versus 9.92 for Never Flagged).
-- **Support and satisfaction:** The dashboard shows average tickets/escalations by account and mean available valid satisfaction scores (approximately 4.03 Ever Churned vs 3.94 Never Flagged). These comparisons are descriptive and should not be interpreted as proof of drivers.
+The report features consistent navigation, slicers, KPI cards and account-level comparisons. See [Power BI setup](docs/POWERBI_SETUP.md) for opening the saved report, validating baseline metrics and updating the CSV source path if a refresh is needed.
 
-## Data quality and interpretation limitations
+## Key findings
 
-1. **Synthetic data:** The dataset is fictional; findings illustrate analytical methods, not a real company's business performance.
-2. **Historical churn indicator:** `accounts.churn_flag` does not establish an account's present-day status; its relationship to churn-event logs requires careful interpretation.
-3. **Usage coverage:** Only **22.27% of logged usage rows** pass the project's signup/subscription date rules. `usage_before_signup_count` and `usage_outside_subscription_count` can overlap and must not be added together.
-4. **Usage units vs rows:** The percentage above describes **records**, not summed `usage_count` actions.
-5. **Historical monetary fields:** `recorded_mrr_sum` is a sum of subscription-recorded MRR entries, **not** current recurring revenue or recognized revenue.
-6. **Satisfaction:** Account-level means skip unavailable valid scores; they are not the same as a ticket-weighted average.
-7. **No causal inference or predictive claims:** Segment differences alone do not establish what caused churn.
+| Metric | Finding |
+| --- | ---: |
+| Distinct accounts | **500** |
+| Ever-churned accounts | **110** |
+| Ever-churned share | **22.00%** |
+| Logged feature-usage records | **25,000** |
+| Date-valid feature-usage records | **5,568** |
+| Date-valid usage coverage | **22.27%** |
 
-## Reproduce the analysis
+- **Customer segments:** DevTools has the highest observed industry ever-churned share in this dataset: **35 of 113 accounts (30.97%)**.
+- **Subscription history:** Average subscription records per account are similar: approximately **10.29** for Ever Churned versus **9.92** for Never Flagged.
+- **Support:** Mean ticket counts are approximately **3.93** (Ever Churned) versus **4.02** (Never Flagged). Mean escalation counts are **0.22** versus **0.18**.
+- **Satisfaction:** Mean available valid account-level satisfaction is approximately **4.03** (Ever Churned) versus **3.94** (Never Flagged), on a five-point scale.
 
-**Requirements:** SQL Server + SSMS, five source CSVs, Python 3.10+ and Jupyter, ODBC Driver 17 for SQL Server, Power BI Desktop.
+These are **descriptive associations**, not evidence of what caused churn.
 
-1. Follow [`docs/SQL_SETUP.md`](docs/SQL_SETUP.md) to initialize `RavenStack_Churn`, import all five CSVs under `raw`, apply relationships, run quality inspection, build views, and validate.
-2. In a terminal at the **repository root**, install dependencies:
+## Data quality and interpretation
+
+- **Historical target:** Account `churn_flag` means **ever churned**, not current status. Account flags and churn-event history do not fully agree.
+- **Limited usage coverage:** Only **5,568 / 25,000** usage rows pass checks against account signup and subscription windows. Invalid-date categories overlap; do not sum them.
+- **Rows vs actions:** **22.27%** is the share of date-valid **usage rows**, not the share of `usage_count` actions.
+- **MRR terminology:** `recorded_mrr_sum` adds historical subscription MRR entries, **not** current recurring revenue or recognized revenue.
+- **Missing satisfaction:** Unavailable valid satisfaction scores are excluded, not treated as zero. The dashboard compares account-level means, not a ticket-weighted grand mean.
+- **Synthetic limitations:** These results demonstrate a workflow; they are not business claims about a real company.
+
+## Reproduce this project
+
+**Requirements:** SQL Server and SSMS, the five source CSVs from Kaggle, Python 3.10+, Jupyter, Microsoft ODBC Driver 17 for SQL Server, and Power BI Desktop.
+
+1. Download the source CSVs from the [original Kaggle dataset](https://www.kaggle.com/datasets/rivalytics/saas-subscription-and-churn-analytics-dataset).
+2. Follow [SQL setup](docs/SQL_SETUP.md) to create `RavenStack_Churn`, import the CSVs, build the views and run validation.
+3. From the repository root, prepare Python and start Jupyter:
 
    ```powershell
    python -m pip install -r requirements.txt
@@ -106,19 +119,19 @@ The report comprises **Home**, **Customer Churn Overview**, and **Customer Exper
    jupyter notebook
    ```
 
-3. Open **`notebooks/customer_churn_eda.ipynb`** and run all cells. **Note:** the notebook exports using the current working directory, so launching Jupyter from the repository root produces `data/processed/ravenstack_account_360.csv` at the expected location.
-4. Open `powerbi/Ravenstack.pbix` with Power BI Desktop. To **refresh** against a newly produced CSV on another computer, update the local file source path in Power Query / Data source settings. A saved PBIX can show previously loaded data even if refreshing is not yet configured.
-5. Cross-check unfiltered KPIs: **500 accounts**, **110 ever churned**, **22.00%**, **25,000 recorded usage rows**, and **5,568 date-valid rows** (**22.27%**).
+4. Open [the notebook](notebooks/customer_churn_eda.ipynb) and **Run All**. Start Jupyter from the repository root so the processed CSV is exported to `data/processed/`.
+5. Open `powerbi/Ravenstack.pbix` in Power BI Desktop once it has been added to the repository. If refreshing the data on a different computer, update the file path in Power Query / data-source settings.
+6. Validate unfiltered results: **500** accounts, **110** ever churned (**22%**), and **5,568** date-valid usage rows out of **25,000** (**22.27%**).
 
-> The SQL script order and source counts have been checked against the project artifacts; **this publishing package was not re-executed on a clean SQL Server instance or refreshed inside Power BI Desktop**.
+**Reproducibility note:** The original SQL and Power BI workflow was executed during the project, but this publishing package has **not** been freshly rerun end-to-end on a clean computer.
 
 ## Repository structure
 
 ```text
 .
 ├── README.md
-├── .gitignore
 ├── requirements.txt
+├── .gitignore
 ├── sql/
 │   ├── 00_database_setup.sql
 │   ├── 01_database_foundation.sql
@@ -127,18 +140,14 @@ The report comprises **Home**, **Customer Churn Overview**, and **Customer Exper
 │   └── 04_final_validation.sql
 ├── notebooks/
 │   └── customer_churn_eda.ipynb
-├── powerbi/
-│   └── Ravenstack.pbix
-├── assets/screenshots/
-│   ├── 01_home_cover.png
-│   ├── 02_customer_churn_overview.png
-│   └── 03_customer_experience_engagement.png
 ├── docs/
 │   ├── SQL_SETUP.md
 │   ├── PYTHON_SETUP.md
 │   └── POWERBI_SETUP.md
-└── data/processed/
-    └── .gitkeep
+├── data/processed/
+│   └── .gitkeep
+├── powerbi/                 # Add Ravenstack.pbix
+└── assets/screenshots/      # Add three dashboard screenshots
 ```
 
-**Data availability:** Original CSV files are available from the [dataset publisher on Kaggle](https://www.kaggle.com/datasets/rivalytics/saas-subscription-and-churn-analytics-dataset). Raw and generated processed CSVs are not included in this repository. The saved Power BI report contains an imported snapshot; refreshing it on another machine may require updating the data source.
+**Data availability:** Source data is hosted by [River @ Rivalytics on Kaggle](https://www.kaggle.com/datasets/rivalytics/saas-subscription-and-churn-analytics-dataset). This repository excludes raw CSVs and the generated processed CSV. Once uploaded, the PBIX contains its own imported data snapshot, but refreshing it elsewhere may require changing the CSV path.
