@@ -16,7 +16,19 @@ The Power BI report includes three pages:
 | **Customer Churn Overview** | Account counts and ever-churned shares by industry, plan tier and seat band |
 | **Customer Experience & Engagement** | Subscription history, plan changes, product usage validity, support activity and satisfaction |
 
-The dashboard screenshots and the `Ravenstack.pbix` file will be linked here once their binary files have been uploaded under `assets/screenshots/` and `powerbi/`. Open the report in **Power BI Desktop**; page-navigation buttons can be tested with **Ctrl + Click** in edit mode.
+**[Download the Power BI report](powerbi/Ravenstack.pbix)** (requires Power BI Desktop). The saved report contains three pages, including working navigation designed for Ctrl + Click in Desktop edit mode.
+
+### Home / Cover
+
+![RavenStack dashboard home](assets/screenshots/01_home_cover.png)
+
+### Customer Churn Overview
+
+![Customer churn overview dashboard](assets/screenshots/02_customer_churn_overview.png)
+
+### Customer Experience & Engagement
+
+![Customer experience and engagement dashboard](assets/screenshots/03_customer_experience_engagement.png)
 
 ## Business questions
 
@@ -120,7 +132,7 @@ These are **descriptive associations**, not evidence of what caused churn.
    ```
 
 4. Open [the notebook](notebooks/customer_churn_eda.ipynb) and **Run All**. Start Jupyter from the repository root so the processed CSV is exported to `data/processed/`.
-5. Open `powerbi/Ravenstack.pbix` in Power BI Desktop once it has been added to the repository. If refreshing the data on a different computer, update the file path in Power Query / data-source settings.
+5. Open the included [`powerbi/Ravenstack.pbix`](powerbi/Ravenstack.pbix) in Power BI Desktop. If refreshing the data on a different computer, update the file path in Power Query / data-source settings.
 6. Validate unfiltered results: **500** accounts, **110** ever churned (**22%**), and **5,568** date-valid usage rows out of **25,000** (**22.27%**).
 
 **Reproducibility note:** The original SQL and Power BI workflow was executed during the project, but this publishing package has **not** been freshly rerun end-to-end on a clean computer.
@@ -148,8 +160,12 @@ These are **descriptive associations**, not evidence of what caused churn.
 │   ├── raw/                # Five credited original CSV files
 │   └── processed/
 │       └── .gitkeep
-├── powerbi/                 # Add Ravenstack.pbix
-└── assets/screenshots/      # Add three dashboard screenshots
+├── powerbi/
+│   └── Ravenstack.pbix
+└── assets/screenshots/
+    ├── 01_home_cover.png
+    ├── 02_customer_churn_overview.png
+    └── 03_customer_experience_engagement.png
 ```
 
-**Data availability:** The five original CSV files are included in [`data/raw/`](data/raw/) and attributed to [River @ Rivalytics on Kaggle](https://www.kaggle.com/datasets/rivalytics/saas-subscription-and-churn-analytics-dataset). The generated processed CSV is not checked in; run the Python notebook to produce it. The Power BI report, once uploaded, contains an imported snapshot, but refreshing it on another machine may require updating the CSV path.
+**Data availability:** The five original CSV files are included in [`data/raw/`](data/raw/) and attributed to [River @ Rivalytics on Kaggle](https://www.kaggle.com/datasets/rivalytics/saas-subscription-and-churn-analytics-dataset). The generated processed CSV is not checked in; run the Python notebook to produce it. The included Power BI report contains an imported snapshot, but refreshing it on another machine may require updating the CSV path.
