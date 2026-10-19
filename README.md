@@ -16,7 +16,7 @@ The Power BI report includes three pages:
 | **Customer Churn Overview** | Account counts and ever-churned shares by industry, plan tier and seat band |
 | **Customer Experience & Engagement** | Subscription history, plan changes, product usage validity, support activity and satisfaction |
 
-The screenshots and downloadable `Ravenstack.pbix` report will be linked here once their binary files are uploaded under `assets/screenshots/` and `powerbi/`. The report should be opened in **Power BI Desktop**; page-navigation buttons can be tested with **Ctrl + Click** in edit mode.
+The dashboard screenshots and the `Ravenstack.pbix` file will be linked here once their binary files have been uploaded under `assets/screenshots/` and `powerbi/`. Open the report in **Power BI Desktop**; page-navigation buttons can be tested with **Ctrl + Click** in edit mode.
 
 ## Business questions
 
@@ -30,7 +30,7 @@ The screenshots and downloadable `Ravenstack.pbix` report will be linked here on
 
 **[SaaS Subscription & Churn Analytics Dataset — Kaggle](https://www.kaggle.com/datasets/rivalytics/saas-subscription-and-churn-analytics-dataset)**, created by **River @ Rivalytics**.
 
-The five source CSV files were imported individually into SQL Server. The dataset is **synthetic**, not customer information from a real business. Source documentation credits the author and describes its terms as *“MIT-like”*, rather than a standard, unambiguous license identifier. To avoid assuming redistribution rights, **the raw CSV files are not republished here**; download them from the original Kaggle page.
+The dataset is **synthetic**, not customer information from a real business. The five original source CSVs are included in [`data/raw/`](data/raw/) for reproducibility, with attribution to **River @ Rivalytics**. The source documentation describes the terms as *“MIT-like”* rather than specifying a standard license identifier; consult the [original Kaggle listing](https://www.kaggle.com/datasets/rivalytics/saas-subscription-and-churn-analytics-dataset) for the applicable reuse conditions.
 
 | Source table | Records |
 | --- | ---: |
@@ -44,7 +44,7 @@ The five source CSV files were imported individually into SQL Server. The datase
 ## Workflow
 
 ```text
-Kaggle source: five CSV files
+Five credited raw CSV files (`data/raw/`)
           ↓
 SQL Server
 Import → relational checks → data-quality audit → analytical views → validation
@@ -109,7 +109,7 @@ These are **descriptive associations**, not evidence of what caused churn.
 
 **Requirements:** SQL Server and SSMS, the five source CSVs from Kaggle, Python 3.10+, Jupyter, Microsoft ODBC Driver 17 for SQL Server, and Power BI Desktop.
 
-1. Download the source CSVs from the [original Kaggle dataset](https://www.kaggle.com/datasets/rivalytics/saas-subscription-and-churn-analytics-dataset).
+1. Use the five source CSVs in [`data/raw/`](data/raw/), or obtain a fresh copy from the [original Kaggle dataset](https://www.kaggle.com/datasets/rivalytics/saas-subscription-and-churn-analytics-dataset).
 2. Follow [SQL setup](docs/SQL_SETUP.md) to create `RavenStack_Churn`, import the CSVs, build the views and run validation.
 3. From the repository root, prepare Python and start Jupyter:
 
@@ -144,10 +144,12 @@ These are **descriptive associations**, not evidence of what caused churn.
 │   ├── SQL_SETUP.md
 │   ├── PYTHON_SETUP.md
 │   └── POWERBI_SETUP.md
-├── data/processed/
-│   └── .gitkeep
+├── data/
+│   ├── raw/                # Five credited original CSV files
+│   └── processed/
+│       └── .gitkeep
 ├── powerbi/                 # Add Ravenstack.pbix
 └── assets/screenshots/      # Add three dashboard screenshots
 ```
 
-**Data availability:** Source data is hosted by [River @ Rivalytics on Kaggle](https://www.kaggle.com/datasets/rivalytics/saas-subscription-and-churn-analytics-dataset). This repository excludes raw CSVs and the generated processed CSV. Once uploaded, the PBIX contains its own imported data snapshot, but refreshing it elsewhere may require changing the CSV path.
+**Data availability:** The five original CSV files are included in [`data/raw/`](data/raw/) and attributed to [River @ Rivalytics on Kaggle](https://www.kaggle.com/datasets/rivalytics/saas-subscription-and-churn-analytics-dataset). The generated processed CSV is not checked in; run the Python notebook to produce it. The Power BI report, once uploaded, contains an imported snapshot, but refreshing it on another machine may require updating the CSV path.
