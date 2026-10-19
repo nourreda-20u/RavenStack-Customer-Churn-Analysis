@@ -38,4 +38,4 @@ This notebook performs **descriptive analysis** on `analytics.vw_account_360` in
 ## Publishing notes
 - Notebook outputs are retained for portfolio readability, except a local personal file path was removed from the final export output.
 - Do not include actual database credentials, private paths, or proprietary/raw datasets without permission.
-- The processed CSV is ignored by default until data provenance/license is verified.
+- The five original source CSVs are included under `data/raw/` with attribution to River @ Rivalytics; the generated processed CSV is ignored because it can be recreated by running this notebook.
