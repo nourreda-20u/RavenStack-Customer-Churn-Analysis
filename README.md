@@ -27,9 +27,9 @@ Interactive report: [`powerbi/Ravenstack.pbix`](powerbi/Ravenstack.pbix) (requir
 
 ## Dataset and attribution
 
-**RavenStack: Synthetic SaaS Dataset (Multi-Table)** — credited in the source dataset README to **River @ Rivalytics**. Its accompanying description requests attribution for educational and portfolio use and describes the data as fully synthetic. Author's supplied blog: [Rivalytics on Medium](https://rivalytics.medium.com).
+**[SaaS Subscription & Churn Analytics Dataset](https://www.kaggle.com/datasets/rivalytics/saas-subscription-and-churn-analytics-dataset)** by **River @ Rivalytics**. The source documentation describes a fully synthetic five-table SaaS dataset and requests attribution for educational and portfolio use. Author's blog: [Rivalytics on Medium](https://rivalytics.medium.com).
 
-The source description calls its terms *“MIT-like”*; this repository **does not interpret that label as a verified MIT license** or grant additional redistribution rights. Original raw CSV files are **not bundled** here. Obtain the files from the original publisher according to their terms. A precise downloadable dataset URL has not been independently verified.
+The accompanying source documentation describes the license as *“MIT-like”*, rather than providing an unambiguous standard license identifier. Accordingly, this repository links to the original Kaggle dataset instead of redistributing the raw CSVs. Follow the publisher's terms when downloading or reusing the data.
 
 | Source table | Rows |
 |---|---:|
@@ -141,4 +141,4 @@ The report comprises **Home**, **Customer Churn Overview**, and **Customer Exper
     └── .gitkeep
 ```
 
-**Project status:** Portfolio publishing package prepared. Raw files and generated processed CSV are excluded pending source/license confirmation; Power BI's saved imported data remains inside its report file.
+**Data availability:** Original CSV files are available from the [dataset publisher on Kaggle](https://www.kaggle.com/datasets/rivalytics/saas-subscription-and-churn-analytics-dataset). Raw and generated processed CSVs are not included in this repository. The saved Power BI report contains an imported snapshot; refreshing it on another machine may require updating the data source.
