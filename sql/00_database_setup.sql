@@ -1,9 +1,6 @@
 -- RavenStack Customer Churn Analysis
 -- Create the database and schemas used in the project.
 
-USE master;
-GO
-
 IF DB_ID('RavenStack_Churn') IS NULL
     CREATE DATABASE RavenStack_Churn;
 GO
